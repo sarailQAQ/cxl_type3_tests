@@ -19,7 +19,7 @@
 #define FLUSH_SIZE          (512 * (1 << 20)) // MB
 #define TSC_FREQ_GHZ	    2.0
 
-char* help_str = " Usage: \n" \
+auto help_str = " Usage: \n" \
                   "-t  	Number of threads.\n" \
                   "-f   enable prefetching (when -p is not specified, prefetch is NOT toggled.) (when -p is specified, default to prefetching disabled)\n" \
                   "-m   buffer size, in byte (!!! only with 32-bit int).\n" \
@@ -201,7 +201,7 @@ int parse_arg(int argc, char*argv[], test_cfg_t* cfg) {
                     fprintf(stderr, "type must be 0(latency clflush), 1(bandwidth), 2(pointer chasing), 3(block latency).\n");
                     return -1;
                 } else {
-                    cfg->type = num;
+                    cfg->type = static_cast<test_type_t>(num);
                 }
                 break;
 
@@ -211,7 +211,7 @@ int parse_arg(int argc, char*argv[], test_cfg_t* cfg) {
                     fprintf(stderr, "operation must be 0(read), 1(read non-temporal), 2(write), 3(write non-temporal), 4(movdir64B) or 5(mix RW).\n");
                     return -1;
                 } else {
-                    cfg->op = num;
+                    cfg->op = static_cast<test_op_t>(num);
                 }
                 break;
 
@@ -290,8 +290,8 @@ int get_node(void *p, uint64_t size)
 
     page_size = (unsigned long)getpagesize();
     page_cnt = (size / page_size);
-    status = malloc(page_cnt * sizeof(int));
-    page_arr = malloc(page_cnt * sizeof(char*));
+    status = (int*)malloc(page_cnt * sizeof(int));
+    page_arr = (void**)malloc(page_cnt * sizeof(char*));
     start_addr = (char*)p;
 
     fprintf(stdout, "[get_node] buf: %lx, page_size: %ld, page_cnt: %ld\n", (uint64_t)(p), page_size, page_cnt);
@@ -476,7 +476,7 @@ void flush_all_cache() {
     char* buf;
     printf(YEL "[INFO]" RESET " Flushing cache, with %d MB access ... \n", FLUSH_SIZE >> 20);
 
-    buf = malloc(FLUSH_SIZE);
+    buf = (char*)malloc(FLUSH_SIZE);
     for (int j = 0; j < 2; j++) {
         for (int i = 0; i < FLUSH_SIZE; i++) {
             buf[i] = i + 1; // make sure this is not optimized

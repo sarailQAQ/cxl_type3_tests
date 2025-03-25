@@ -155,8 +155,8 @@ int run_test(test_cfg_t* cfg) {
 
     // alloc
     num_thread = cfg->num_thread;
-    thread_arr = malloc(num_thread * sizeof(pthread_t));
-    cfg_arr = malloc(num_thread * sizeof(test_cfg_t));
+    thread_arr = (pthread_t*)malloc(num_thread * sizeof(pthread_t));
+    cfg_arr = (test_cfg_t*)malloc(num_thread * sizeof(test_cfg_t));
     memset(cfg_arr, 0, num_thread * sizeof(test_cfg_t));
 
 
@@ -380,7 +380,7 @@ void block_lats_wrapper(test_cfg_t* cfg) {
     int core_num = cfg->thread_idx + cfg->starting_core;
 
     uint64_t* result_buff;
-    result_buff = malloc(sizeof(uint64_t) * cfg->op_iter);
+    result_buff = (uint64_t*)malloc(sizeof(uint64_t) * cfg->op_iter);
 
     set_prefetching(cfg->starting_core, cfg->prefetch_en, core_num);
 
@@ -443,7 +443,7 @@ void lats_clflush_wrapper(test_cfg_t* cfg) {
     int core_num = cfg->thread_idx + cfg->starting_core;
 
     uint64_t* result_buff;
-    result_buff = malloc(sizeof(uint64_t) * cfg->op_iter);
+    result_buff = (uint64_t*)malloc(sizeof(uint64_t) * cfg->op_iter);
 
     set_prefetching(cfg->starting_core, cfg->prefetch_en, core_num);
     

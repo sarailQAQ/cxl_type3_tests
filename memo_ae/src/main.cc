@@ -11,7 +11,7 @@
 int main(int argc, char*argv[]) {
     int ret;
     test_cfg_t* cfg;
-    cfg = malloc(sizeof(test_cfg_t));
+    cfg = (test_cfg_t*)malloc(sizeof(test_cfg_t));
 
     ret = parse_arg(argc, argv, cfg);
     if (ret < 0) {
